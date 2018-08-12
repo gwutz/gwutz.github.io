@@ -1,0 +1,8 @@
+Sitemap
+=======
+
+.. toctree::
+   :maxdepth: 1
+
+   2018/08/12/meson_test_is_parallel
+

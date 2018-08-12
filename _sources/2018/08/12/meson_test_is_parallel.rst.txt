@@ -1,0 +1,45 @@
+meson test is parallel
+======================
+
+Today i searched half of the day for a super strange bug in my library
+development project. I wanted to build this library as a TDD library
+to get the hang of working from the API caller side first. Therefore i always
+build my tests before i write the working code.
+
+My library has business layer with interfaces to all sides so i basically don't
+care which implementation i use and i can act dynamically when i want a different
+backend for example. My implementation for the database layer is a sqlite
+one and this specific module was failing all the day. The interesting part
+is: it was just failing in a specific test order of my library tests. I was
+super confused because i got a ``database is locked`` error when i created
+my table scheme in one of my tests. The same call from former tests succeeded
+so there has to be a problem with opening and closing of my database. I checked
+every call to ``sqlite_open`` and ``sqlite_close`` and checked the return code
+of these calls but it looked like everything is fine.
+
+Sqlite allows multiple reader in different connections but only one writer.
+The statement which failed in my test suite was a
+
+.. code:: sql
+
+	CREATE TABLE IS NOT EXISTS (...)
+
+I think this gets always interpreted as a write even if the database already
+has that table. What me really bothered was the ordering removed this error
+and i thought i have a really terrible closing error in my library. But then
+i realized that maybe it has nothing todo with my library. I knowed that i
+can configure meson to use more processes for testing. I consulted the
+meson reference and saw this statement about unit tests:
+
+	To reduce test times, Meson will by default run multiple unit tests in parallel.
+
+This was the culprint. Tests which use my database even when i don't test
+specifically my database are run in parallel which means multiple writer. A
+reordering can help - but would be a fragile solution. Disabling parallelism
+for some unit tests was the solution after all. So keep that in mind, when
+you try TDD - know your buildsystem, tap runner and environment!
+
+.. author:: default
+.. categories:: none
+.. tags:: none
+.. comments::

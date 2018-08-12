@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Günther Wagner - the blog</title>
+        <link>http://127.0.0.1/blog/html/</link>
+        <description>Everything after you have read K&R</description>
+        <language>en-us</language>
+        <pubDate>Sun, 12 Aug 2018 00:00:00 +0200</pubDate>
+        
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/08/12/meson_test_is_parallel.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/08/12/meson_test_is_parallel.html</guid>
+            <title><![CDATA[meson test is parallel]]></title>
+            <description><![CDATA[<h1>meson test is parallel</h1>
+<p>Today i searched half of the day for a super strange bug in my library
+development project. I wanted to build this library as a TDD library
+to get the hang of working from the API caller side first. Therefore i always
+build my tests before i write the working code.</p>
+<p>My library has business layer with interfaces to all sides so i basically don’t
+care which implementation i use and i can act dynamically when i want a different
+backend for example. My implementation for the database layer is a sqlite
+one and this specific module was failing all the day. The interesting part
+is: it was just failing in a specific test order of my library tests. I was
+super confused because i got a <span class="docutils literal"><span class="pre">database</span> <span class="pre">is</span> <span class="pre">locked</span></span> error when i created
+my table scheme in one of my tests. The same call from former tests succeeded
+so there has to be a problem with opening and closing of my database. I checked
+every call to <span class="docutils literal"><span class="pre">sqlite_open</span></span> and <span class="docutils literal"><span class="pre">sqlite_close</span></span> and checked the return code
+of these calls but it looked like everything is fine.</p>
+<p>Sqlite allows multiple reader in different connections but only one writer.
+The statement which failed in my test suite was a</p>
+<div class="code sql highlight-default notranslate"><div class="highlight"><pre><span/><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IS</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>I think this gets always interpreted as a write even if the database already
+has that table. What me really bothered was the ordering removed this error
+and i thought i have a really terrible closing error in my library. But then
+i realized that maybe it has nothing todo with my library. I knowed that i
+can configure meson to use more processes for testing. I consulted the
+meson reference and saw this statement about unit tests:</p>
+<blockquote>
+<div>To reduce test times, Meson will by default run multiple unit tests in parallel.</div></blockquote>
+<p>This was the culprint. Tests which use my database even when i don’t test
+specifically my database are run in parallel which means multiple writer. A
+reordering can help - but would be a fragile solution. Disabling parallelism
+for some unit tests was the solution after all. So keep that in mind, when
+you try TDD - know your buildsystem, tap runner and environment!</p>
+]]></description>
+             <pubDate>Sun, 12 Aug 2018 00:00:00 +0200</pubDate>
+        </item>
+    
+    </channel>
+</rss>
