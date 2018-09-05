@@ -5,8 +5,89 @@
         <link>http://127.0.0.1/blog/html/</link>
         <description>Everything after you have read K&R</description>
         <language>en-us</language>
-        <pubDate>Sun, 12 Aug 2018 00:00:00 +0200</pubDate>
+        <pubDate>Wed, 05 Sep 2018 00:00:00 +0200</pubDate>
         
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/09/05/constructor_attribute_for_shared_librarys.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/09/05/constructor_attribute_for_shared_librarys.html</guid>
+            <title><![CDATA[Constructor attribute for shared libraries]]></title>
+            <description><![CDATA[<h1>Constructor attribute for shared libraries</h1>
+<p>I often read source code of different projects. Especially when i use them often
+like glib. I realized that glib has a <span class="docutils literal"><span class="pre">glib-init</span></span> file and wondered because
+i never had to call any initialization. Therefore this must be called by
+another mechanism.</p>
+<p><span class="docutils literal"><span class="pre">glib-init.c</span></span> includes a header called <span class="docutils literal"><span class="pre">gconstructor.h</span></span> which i know already
+from another project: <span class="docutils literal"><span class="pre">gnome-builder</span></span>. The header got probably copied but both
+projects use this for the same purpose:</p>
+<blockquote>
+<div>execute a function to initialize a library on library-loading.</div></blockquote>
+<p>This is a really nice feature, which is not documented in the c standard.
+It is an extension from C compilers. If we read up the documentation we get:</p>
+<blockquote>
+<div><p><span class="docutils literal"><span class="pre">__attribute__((constructor))</span></span></p>
+<p>The constructor attribute causes the function to be called automatically
+before execution enters main ().</p>
+</div></blockquote>
+<p>The aforementioned header tries to comply to various compilers or at least
+sets a preprocessor value to inform the user about missing functionality for
+this constructor attribute. As mentioned in the header file:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#ifdef G_DEFINE_CONSTRUCTOR_NEEDS_PRAGMA</span>
+<span class="c1">#pragma G_DEFINE_CONSTRUCTOR_PRAGMA_ARGS(my_constructor)</span>
+<span class="c1">#endif</span>
+<span class="n">G_DEFINE_CONSTRUCTOR</span><span class="p">(</span><span class="n">my_constructor</span><span class="p">)</span>
+<span class="n">static</span> <span class="n">void</span> <span class="n">my_constructor</span><span class="p">(</span><span class="n">void</span><span class="p">)</span> <span class="p">{</span>
+<span class="o">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="section" id="example">
+<h2>Example</h2>
+<p>To demonstrate this, i created a simple example application with a shared
+library. The library looks like:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#include "gconstructor.h"</span>
+
+<span class="n">G_DEFINE_CONSTRUCTOR</span> <span class="p">(</span><span class="n">this_runs_before_main</span><span class="p">)</span>
+
+<span class="n">void</span>
+<span class="n">this_runs_before_main</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Before main"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">void</span>
+<span class="n">library_func</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Library Func"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>I annotated one function with a constructor attribute. The <span class="docutils literal"><span class="pre">library_func</span></span> is
+exposed via the corresponding headerfile. The executable looks like:</p>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#include "library.h"</span>
+
+<span class="nb">int</span>
+<span class="n">main</span> <span class="p">(</span><span class="nb">int</span>   <span class="n">argc</span><span class="p">,</span>
+      <span class="n">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Main"</span><span class="p">);</span>
+
+  <span class="n">library_func</span> <span class="p">();</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Not very surprising the output looks like</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span/><span class="n">Before</span> <span class="n">main</span>
+<span class="n">Main</span>
+<span class="n">Library</span> <span class="n">Func</span>
+</pre></div>
+</div>
+</div>
+]]></description>
+             <pubDate>Wed, 05 Sep 2018 00:00:00 +0200</pubDate>
+        </item>
+    
         <item>
             <link>http://127.0.0.1/blog/html/2018/08/12/meson_test_is_parallel.html</link>
             <guid>http://127.0.0.1/blog/html/2018/08/12/meson_test_is_parallel.html</guid>

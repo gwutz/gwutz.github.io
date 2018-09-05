@@ -1,0 +1,91 @@
+Constructor attribute for shared libraries
+==========================================
+
+I often read source code of different projects. Especially when i use them often
+like glib. I realized that glib has a ``glib-init`` file and wondered because
+i never had to call any initialization. Therefore this must be called by
+another mechanism.
+
+``glib-init.c`` includes a header called ``gconstructor.h`` which i know already
+from another project: ``gnome-builder``. The header got probably copied but both
+projects use this for the same purpose:
+
+	execute a function to initialize a library on library-loading.
+
+This is a really nice feature, which is not documented in the c standard.
+It is an extension from C compilers. If we read up the documentation we get:
+
+	``__attribute__((constructor))``
+
+	The constructor attribute causes the function to be called automatically
+	before execution enters main ().
+
+The aforementioned header tries to comply to various compilers or at least
+sets a preprocessor value to inform the user about missing functionality for
+this constructor attribute. As mentioned in the header file:
+
+
+.. code:: c
+
+	#ifdef G_DEFINE_CONSTRUCTOR_NEEDS_PRAGMA
+	#pragma G_DEFINE_CONSTRUCTOR_PRAGMA_ARGS(my_constructor)
+	#endif
+	G_DEFINE_CONSTRUCTOR(my_constructor)
+	static void my_constructor(void) {
+	...
+	}
+
+Example
+-------
+
+To demonstrate this, i created a simple example application with a shared
+library. The library looks like:
+
+.. code:: c
+
+	#include "gconstructor.h"
+
+	G_DEFINE_CONSTRUCTOR (this_runs_before_main)
+
+	void
+	this_runs_before_main (void)
+	{
+	  printf ("%s\n", "Before main");
+	}
+
+	void
+	library_func (void)
+	{
+	  printf ("%s\n", "Library Func");
+	}
+
+I annotated one function with a constructor attribute. The ``library_func`` is
+exposed via the corresponding headerfile. The executable looks like:
+
+.. code:: c
+
+	#include "library.h"
+
+	int
+	main (int   argc,
+	      char *argv[])
+	{
+	  printf ("%s\n", "Main");
+
+	  library_func ();
+
+	  return 0;
+	}
+
+Not very surprising the output looks like
+
+.. code-block:: c
+
+	Before main
+	Main
+	Library Func
+
+.. author:: default
+.. categories:: none
+.. tags:: none
+.. comments::

@@ -15,29 +15,29 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="description" content="My development blog">
         <meta name="viewport" content="width=device-width">
-        <title>Home &mdash; Günther Wagner - the blog</title>
-            <link rel="stylesheet" href="_static/normalize.css" type="text/css">
-            <link rel="stylesheet" href="_static/sphinx.css" type="text/css">
-            <link rel="stylesheet" href="_static/main.css" type="text/css">
-            <link rel="stylesheet" href="_static/flat.css" type="text/css">
-            <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-            <link rel="stylesheet" href="_static/font-awesome.min.css" type="text/css">
-        <link rel="shortcut icon" href="_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
-        <script src="_static/vendor/modernizr-2.6.2.min.js"></script>
+        <title>Constructor attribute for shared libraries &mdash; Günther Wagner - the blog</title>
+            <link rel="stylesheet" href="../../../_static/normalize.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/sphinx.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/main.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/flat.css" type="text/css">
+            <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+            <link rel="stylesheet" href="../../../_static/font-awesome.min.css" type="text/css">
+        <link rel="shortcut icon" href="../../../_static/tinkerer.ico" /><!-- Load modernizr and JQuery -->
+        <script src="../../../_static/vendor/modernizr-2.6.2.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
-        <script src="_static/plugins.js"></script>
-        <script src="_static/main.js"></script>
-        <link rel="search" title="Search" href="search.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="rss.html" /><script type="text/javascript">
+        <script>window.jQuery || document.write('<script src="../../../_static/vendor/jquery-1.8.2.min.js"><\/script>')</script>
+        <script src="../../../_static/plugins.js"></script>
+        <script src="../../../_static/main.js"></script>
+        <link rel="search" title="Search" href="../../../search.html" /><link rel="next" title="meson test is parallel" href="../../08/12/meson_test_is_parallel.html" /><link rel="alternate" type="application/rss+xml" title="RSS" href="../../../rss.html" /><script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
+        URL_ROOT:    '../../../',
         VERSION:     '1.7.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         SOURCELINK_SUFFIX: '.txt',
         HAS_SOURCE:  true
       };
-    </script><script type="text/javascript" src="_static/underscore.js"></script><script type="text/javascript" src="_static/doctools.js"></script>
+    </script><script type="text/javascript" src="../../../_static/underscore.js"></script><script type="text/javascript" src="../../../_static/doctools.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -55,18 +55,18 @@
 
       <div id="container"><header role="banner">
             <hgroup>
-              <h1><a href="#">Günther Wagner - the blog</a></h1><h2>Everything after you have read K&amp;R</h2></hgroup>
+              <h1><a href="../../../index.html">Günther Wagner - the blog</a></h1><h2>Everything after you have read K&amp;R</h2></hgroup>
           </header>
       <nav role="navigation">
             <ul><li class="main-nav">
-                  <a href="#">Home</a>
+                  <a href="../../../index.html">Home</a>
                 </li>
               </ul>
           </nav><div class="main-container" role="main"><div class="main wrapper body clearfix"><article><div class="timestamp postmeta">
             <span>September 05, 2018</span>
         </div>
-        <div class="section">
-            <h1><a href="2018/09/05/constructor_attribute_for_shared_librarys.html">Constructor attribute for shared libraries</a></h1>
+    <div class="section" id="constructor-attribute-for-shared-libraries">
+<h1>Constructor attribute for shared libraries</h1>
 <p>I often read source code of different projects. Especially when i use them often
 like glib. I realized that glib has a <span class="docutils literal"><span class="pre">glib-init</span></span> file and wondered because
 i never had to call any initialization. Therefore this must be called by
@@ -86,7 +86,7 @@ before execution enters main ().</p>
 <p>The aforementioned header tries to comply to various compilers or at least
 sets a preprocessor value to inform the user about missing functionality for
 this constructor attribute. As mentioned in the header file:</p>
-<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#ifdef G_DEFINE_CONSTRUCTOR_NEEDS_PRAGMA</span>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#ifdef G_DEFINE_CONSTRUCTOR_NEEDS_PRAGMA</span>
 <span class="c1">#pragma G_DEFINE_CONSTRUCTOR_PRAGMA_ARGS(my_constructor)</span>
 <span class="c1">#endif</span>
 <span class="n">G_DEFINE_CONSTRUCTOR</span><span class="p">(</span><span class="n">my_constructor</span><span class="p">)</span>
@@ -99,32 +99,32 @@ this constructor attribute. As mentioned in the header file:</p>
 <h2>Example</h2>
 <p>To demonstrate this, i created a simple example application with a shared
 library. The library looks like:</p>
-<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#include "gconstructor.h"</span>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &quot;gconstructor.h&quot;</span>
 
 <span class="n">G_DEFINE_CONSTRUCTOR</span> <span class="p">(</span><span class="n">this_runs_before_main</span><span class="p">)</span>
 
 <span class="n">void</span>
 <span class="n">this_runs_before_main</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Before main"</span><span class="p">);</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Before main&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 
 <span class="n">void</span>
 <span class="n">library_func</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Library Func"</span><span class="p">);</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Library Func&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p>I annotated one function with a constructor attribute. The <span class="docutils literal"><span class="pre">library_func</span></span> is
 exposed via the corresponding headerfile. The executable looks like:</p>
-<div class="code c highlight-default notranslate"><div class="highlight"><pre><span/><span class="c1">#include "library.h"</span>
+<div class="code c highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#include &quot;library.h&quot;</span>
 
 <span class="nb">int</span>
 <span class="n">main</span> <span class="p">(</span><span class="nb">int</span>   <span class="n">argc</span><span class="p">,</span>
       <span class="n">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
-  <span class="n">printf</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"Main"</span><span class="p">);</span>
+  <span class="n">printf</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Main&quot;</span><span class="p">);</span>
 
   <span class="n">library_func</span> <span class="p">();</span>
 
@@ -133,78 +133,34 @@ exposed via the corresponding headerfile. The executable looks like:</p>
 </pre></div>
 </div>
 <p>Not very surprising the output looks like</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span/><span class="n">Before</span> <span class="n">main</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">Before</span> <span class="n">main</span>
 <span class="n">Main</span>
 <span class="n">Library</span> <span class="n">Func</span>
 </pre></div>
 </div>
 </div>
-
-        </div>
-        <div class="postmeta">
-        <div class="author">
-            <span>Posted by Günther Wagner</span>
-        </div>
-        
-        
-        </div><div class="separator post_separator"></div><div class="timestamp postmeta">
-            <span>August 12, 2018</span>
-        </div>
-        <div class="section">
-            <h1><a href="2018/08/12/meson_test_is_parallel.html">meson test is parallel</a></h1>
-<p>Today i searched half of the day for a super strange bug in my library
-development project. I wanted to build this library as a TDD library
-to get the hang of working from the API caller side first. Therefore i always
-build my tests before i write the working code.</p>
-<p>My library has business layer with interfaces to all sides so i basically don’t
-care which implementation i use and i can act dynamically when i want a different
-backend for example. My implementation for the database layer is a sqlite
-one and this specific module was failing all the day. The interesting part
-is: it was just failing in a specific test order of my library tests. I was
-super confused because i got a <span class="docutils literal"><span class="pre">database</span> <span class="pre">is</span> <span class="pre">locked</span></span> error when i created
-my table scheme in one of my tests. The same call from former tests succeeded
-so there has to be a problem with opening and closing of my database. I checked
-every call to <span class="docutils literal"><span class="pre">sqlite_open</span></span> and <span class="docutils literal"><span class="pre">sqlite_close</span></span> and checked the return code
-of these calls but it looked like everything is fine.</p>
-<p>Sqlite allows multiple reader in different connections but only one writer.
-The statement which failed in my test suite was a</p>
-<div class="code sql highlight-default notranslate"><div class="highlight"><pre><span/><span class="n">CREATE</span> <span class="n">TABLE</span> <span class="n">IS</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</pre></div>
 </div>
-<p>I think this gets always interpreted as a write even if the database already
-has that table. What me really bothered was the ordering removed this error
-and i thought i have a really terrible closing error in my library. But then
-i realized that maybe it has nothing todo with my library. I knowed that i
-can configure meson to use more processes for testing. I consulted the
-meson reference and saw this statement about unit tests:</p>
-<blockquote>
-<div>To reduce test times, Meson will by default run multiple unit tests in parallel.</div></blockquote>
-<p>This was the culprint. Tests which use my database even when i don’t test
-specifically my database are run in parallel which means multiple writer. A
-reordering can help - but would be a fragile solution. Disabling parallelism
-for some unit tests was the solution after all. So keep that in mind, when
-you try TDD - know your buildsystem, tap runner and environment!</p>
 
-        </div>
-        <div class="postmeta">
+    <div class="postmeta">
         <div class="author">
             <span>Posted by Günther Wagner</span>
         </div>
         
         
-        </div><div class="archive_link">
-        <a href="archive.html"> &mdash; Blog Archive &mdash; </a>
-    </div></article><aside class="sidebar"><section><div class="widget">
+        </div><ul class="related clearfix">
+            <li class="left"></li>
+            <li class="right"><a href="../../08/12/meson_test_is_parallel.html">meson test is parallel</a> &raquo; </li>
+        </ul></article><aside class="sidebar"><section><div class="widget">
     <h1>Recent Posts</h1>
     <ul><li>
-            <a href="2018/09/05/constructor_attribute_for_shared_librarys.html">Constructor attribute for shared libraries</a>
+            <a href="#">Constructor attribute for shared libraries</a>
         </li><li>
-            <a href="2018/08/12/meson_test_is_parallel.html">meson test is parallel</a>
+            <a href="../../08/12/meson_test_is_parallel.html">meson test is parallel</a>
         </li></ul>
 </div>
 </section><section><div class="widget" id="searchbox" role="search">
     <h1><a href="#searchbox">Search</a></h1>
-    <form action="search.html" method="get">
+    <form action="../../../search.html" method="get">
         <input type="text" name="q" />
         <button type="submit"><span class="fa fa-search"></span></button>
     </form>
