@@ -5,8 +5,59 @@
         <link>http://127.0.0.1/blog/html/</link>
         <description>Everything after you have read K&R</description>
         <language>en-us</language>
-        <pubDate>Wed, 05 Sep 2018 00:00:00 +0200</pubDate>
+        <pubDate>Sat, 22 Sep 2018 00:00:00 +0200</pubDate>
         
+        <item>
+            <link>http://127.0.0.1/blog/html/2018/09/22/amsel_the_next_attempt.html</link>
+            <guid>http://127.0.0.1/blog/html/2018/09/22/amsel_the_next_attempt.html</guid>
+            <title><![CDATA[amsel - the next attempt]]></title>
+            <description><![CDATA[<h1>amsel - the next attempt</h1>
+<p>Most of the time i try to sharpen my skills regarding software development.
+There is so much to learn and i really want to get considered good enough in
+this field. Therefore i often try to experiment with new insights and advices
+from books or talks to try kind of development and learn from these experiments.</p>
+<p>For example last year i experimented with my knowledge reading up the source
+code of <a class="reference external" href="http://gitlab.gnome.org/GNOME/gnome-builder">gnome-builder</a> and
+contributing small patches to build my own application in C. I saw, there are
+ideas around to have a GNOME RSS reader and i rebuilt therefore GNOME News. This
+was a nice experiment and i got nice comments about it. I ended up in some
+problems with my choice of architecture. It seemed like i made some mistakes
+here and there and the usage of libgrss had problems too (it seemed not
+maintained anymore and i had no idea how that library worked internally).</p>
+<p>Coming out of this development i had the feeling, that i have to structure such
+an application more and should start with requirements first before i start
+developing. In the meantime i made attempts to have a GtkFlowBox with headers
+which ended up in a way which could work but is probably inperformant. Talking
+with some people at GUADEC made me feel like there are ideas about such a
+widget and people really want performance for List/FlowBox inside Gtk. There
+will be eventually a hackfest working on this (but there is no date at the
+moment).</p>
+<p>One of my problems at my first and second attempt was that i really want to
+mix up a traditional offline RSS/Atom reader with an online service like feedly.
+But the former speaks only xml and the latter JSON. All my implementations
+where based on the input data and then i saw a talk from uncle Bob. He talked
+about an abstraced way for your application. Just implement the business logic
+and get the data in a simple format. This idea is similar to the unix
+philosophy which basically states:</p>
+<ul class="simple">
+<li>Write programs that do one thing and do it well</li>
+<li>Write programs to work together</li>
+<li>Write programs to handle text streams, because that is a universal interface.</li>
+</ul>
+<p>The last point is the same like that from uncle Bob. This was a really nice
+idea which i wanted to test out. I took most of my code from former experiments
+and created a library called <strong>alb</strong> (AmseLBackend) which is the core driver
+for my application. It wraps data in a simple <span class="docutils literal"><span class="pre">AmselRequest</span></span> object which
+is raw data. It tries to determine the kind of data (which could be RSS, ATOM or
+JSON) and enters this data to a engine which returns usable data objects. The
+gui code is rather simple because of that (at the moment i only have 3 files)
+and i think this a good architecture to work forward. As i don’t want to write
+all this without a little showcase, this is my pre-alpha <strong>Amsel</strong> application.</p>
+<img alt="../../../_images/amsel-pre-alpha.png" src="http://127.0.0.1/blog/html/_images/amsel-pre-alpha.png"/>
+]]></description>
+             <pubDate>Sat, 22 Sep 2018 00:00:00 +0200</pubDate>
+        </item>
+    
         <item>
             <link>http://127.0.0.1/blog/html/2018/09/05/constructor_attribute_for_shared_librarys.html</link>
             <guid>http://127.0.0.1/blog/html/2018/09/05/constructor_attribute_for_shared_librarys.html</guid>

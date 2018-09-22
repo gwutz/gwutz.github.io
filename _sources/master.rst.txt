@@ -4,6 +4,7 @@ Sitemap
 .. toctree::
    :maxdepth: 1
 
+   2018/09/22/amsel_the_next_attempt
    2018/09/05/constructor_attribute_for_shared_librarys
    2018/08/12/meson_test_is_parallel
 
